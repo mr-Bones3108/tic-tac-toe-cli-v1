@@ -5,19 +5,19 @@ const gameBoard = (() => {
 
     const updateBoard = (index, sign) => {
         board[index] = sign;
-        
+        screenController.createBoard()
     };
  
-    const printBoard = () => {
-        console.log(board.slice(0, 3).join(' '));
-        console.log(board.slice(3, 6).join(' '));
-        console.log(board.slice(6, 9).join(' '));
-    };
+    // const printBoard = () => {
+    //     console.log(board.slice(0, 3).join(' '));
+    //     console.log(board.slice(3, 6).join(' '));
+    //     console.log(board.slice(6, 9).join(' '));
+    // };
 
     return {
         getBoard,
         updateBoard,
-        printBoard,
+        // printBoard,
     };
 })();
 
@@ -58,37 +58,37 @@ const startGame = (()=>{
     let player = []
     let currPlayer;
     let gameOver;
-
+    
     const start = ()=>{
         player = [players("player1","X"),players("player2","O")]
         currPlayer=0
         gameOver=false
         gameBoard.getBoard()
-        console.log(player[currPlayer].name,"'s turn ")
+        displayPlayerInfo.displayPlayerTurn(player[currPlayer].name)
     }
 
-    const playerTurn = (index) => {
+    const playerTurn = (event) => {
         if(gameOver){
             console.log("game is already over !!")
             return
         }
-        if(gameBoard.getBoard()[index]===""){
-            gameBoard.updateBoard(index, player[currPlayer].sign);
-            gameBoard.printBoard();
-    
-            if (checkForWin(gameBoard.getBoard())) {
-                gameOver=true
-                console.log(player[currPlayer].name, " wins!");
-            } else if (checkForTie(gameBoard.getBoard())) {
-                gameOver=true
-                console.log("It's a tie!");
-            } else {
-                currPlayer = currPlayer === 0 ? 1 : 0;
-                console.log(player[currPlayer].name, "'s turn ");
-            }
+
+        const index = parseInt(event.target.id.split("-")[1])
+        const valuePresent = gameBoard.getBoard()[index]
+        if(valuePresent !==""){
+            return;
         }
-        else{
-            console.log("already Marked")
+        gameBoard.updateBoard(index, player[currPlayer].sign);
+    
+        if (checkForWin(gameBoard.getBoard())) {
+            gameOver=true
+            displayPlayerInfo.displayPlayerWin(player[currPlayer].name)
+        } else if (checkForTie(gameBoard.getBoard())) {
+            gameOver=true
+            displayPlayerInfo.displayPlayerTie()
+        } else{
+            currPlayer = currPlayer === 0 ? 1 : 0;
+            displayPlayerInfo.displayPlayerTurn(player[currPlayer].name)
         }
     };
 
@@ -106,22 +106,61 @@ const startGame = (()=>{
     }
 })()
 
-// startGame.start()
-// startGame.playerTurn(4);
-// startGame.playerTurn(0);
-// startGame.playerTurn(8);
-// startGame.playerTurn(1);
-// startGame.playerTurn(7);
-// startGame.playerTurn(2);
-// startGame.resetGame()
-// startGame.playerTurn(4);
-// startGame.playerTurn(0);
-// startGame.playerTurn(8);
-// startGame.playerTurn(1);
-// startGame.playerTurn(7);
-// startGame.playerTurn(3);
-// startGame.playerTurn(6);
-// startGame.resetGame()
+const displayPlayerInfo =(()=>{
+    let playerT = document.querySelector('.turn');
+    const displayPlayerTurn = (turn)=>{
+        playerT.textContent=""
+        playerT.textContent = `${turn}'s turn`
+    }
+
+    const displayPlayerWin = (turn)=>{
+        playerT.textContent=""
+        playerT.textContent=`${turn}'s wins`
+    }
+    const displayPlayerTie = ()=>{
+        playerT.textContent=""
+        playerT.textContent=`Its a tie play Again`
+    }
+    return{
+        displayPlayerTurn,
+        displayPlayerWin,
+        displayPlayerTie
+    }
+})();
+
+const screenController = (()=>{
+    const gameStart =()=>{
+        startGame.start()
+    }
+    let boardDiv = document.querySelector("#board")
+    const createBoard =()=>{
+        
+        boardDiv.innerHTML=""
+        gameBoard.getBoard().forEach((square,index)=>{
+            boardDiv.innerHTML +=`<div class="square" id="square-${index}">${square}</div>`;
+        });
+
+        const squares = document.querySelectorAll(".square");
+        squares.forEach((square)=>{
+            square.addEventListener('click',startGame.playerTurn)
+        })
+    }
+
+    return{
+        createBoard,
+        gameStart
+    }
+})();
+
+
+
+
+
+function startTic(){
+    screenController.gameStart()
+    screenController.createBoard()
+}
+
 
 
 
