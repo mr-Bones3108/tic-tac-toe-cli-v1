@@ -60,7 +60,7 @@ const startGame = (()=>{
     let gameOver;
     
     const start = ()=>{
-        player = [players("player1","X"),players("player2","O")]
+        player = [players("Player 1","X"),players("Player 2","O")]
         currPlayer=0
         gameOver=false
         gameBoard.getBoard()
@@ -110,12 +110,12 @@ const displayPlayerInfo =(()=>{
     let playerT = document.querySelector('.turn');
     const displayPlayerTurn = (turn)=>{
         playerT.textContent=""
-        playerT.textContent = `${turn}'s turn`
+        playerT.textContent = `${turn}'s Turn`
     }
 
     const displayPlayerWin = (turn)=>{
         playerT.textContent=""
-        playerT.textContent=`${turn}'s wins`
+        playerT.textContent=`${turn} win's play again`
     }
     const displayPlayerTie = ()=>{
         playerT.textContent=""
@@ -156,9 +156,14 @@ const screenController = (()=>{
 
 
 
-function startTic(){
-    screenController.gameStart()
-    screenController.createBoard()
+// function startTic(){
+   
+//     startGame.resetGame()
+// }
+screenController.gameStart()
+screenController.createBoard()
+function reGame(){
+    startGame.resetGame()
 }
 
 
